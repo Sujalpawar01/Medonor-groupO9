@@ -12,17 +12,31 @@
   <body>
     <header>
       <nav >
-        <img src="https://cdn-icons-gif.flaticon.com/6449/6449707.gif"  class="icon" alt="" srcset="" height="100px" width="100px"  >
+        <img id="heart" src="https://cdn-icons-gif.flaticon.com/6449/6449707.gif"  class="icon" alt="" srcset="" height="100px" width="100px"  >
         <ul class="navlist">
           <li><a href="/home"> Home </a></li>
           <li>
             <a href="/about" class="activeLink"> About </a>
           </li>
           <li>
-            <a href=""> Contact </a>
+            <a href="/feedback"> FAQ's </a>
+          </li>
+          <li>
+            <a href="/contact"> Contact </a>
           </li>
           <li>
             <a href="/donate">Donate</a>
+          </li>
+          <li>
+            <a href="https://chatformeds.netlify.app" target="_blank">ChatForMeds</a>
+            
+          </li>
+          <li>
+            <form method="post" action="/logout">
+
+              <button class="logoutBtn" type="submit">Logout</button>
+            </form>
+            
           </li>
         </ul>
       </nav>

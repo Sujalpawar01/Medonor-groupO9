@@ -1,15 +1,22 @@
 import express, { urlencoded } from "express";
 import path from "path";
 import bcrypt from "bcrypt"
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+import jwt_decode from 'jwt-decode'
+import sendMail from './sendMail/sendMail.js'
+
+
+dotenv.config()
 // ykeuueijasldkfjlkasdjflkajskljdfklsajd
 
 const app = express();
-
+//This is a commit from my phone
 app.use(session({
-    cookie: { maxAge: 3000000 },
+    cookie: { maxAge: 300000000 },
     secret: "some secret",
     saveUninitialized: false
 }))
@@ -32,10 +39,15 @@ const checkAuthentication = async (req, res, next) => {
 
 }
 
-mongoose.connect("mongodb://localhost:27017", {
-    dbName: "Medonor"
-}).then(() => console.log("database connected")).catch((e) => { console.log(e) })
+const connectDB = async()=>{
 
+    mongoose.set('strictQuery',false);
+const conn =      await mongoose.connect(process.env.MONGO_URI, {
+        dbName: "Medonor"
+    }).then(() => console.log("database connected")).catch((e) => { console.log(e) })
+}
+
+//we use mongoose as a module to make use of MongoDB in nodejs
 const userSchema = new mongoose.Schema({
     name: String,
     email: String,
@@ -77,16 +89,47 @@ app.get("/about", (req, res) => {
     }
     res.render("about.ejs");
 })
+app.get("/feedback", (req, res) => {
+    if(!req.cookies.token)
+    {
+        res.render("login.ejs",{message:"please login first"})
+    }
+    res.render("feedback.ejs");
+})
 app.get("/register", (req, res) => {
     res.render("register.ejs", { message: "WELCOME TO MEDONOR!!!" });
 })
 app.get("/login", (req, res) => {
     res.render("login.ejs", { message: "Welcome back!" })
 })
+app.get("/donateinfo",async(req,res)=>{
+    let jwtValue = req.cookies.token;
+    // console.log(jwtValue);
+    let decodedToken = jwt_decode(jwtValue);
+    const {id} = decodedToken;
+    //using the id from the encrypted cookie, we will now fetch users data from DB
+    
+    let currentUser = await Users.findById(id);
+    // console.log(currentUser)
+    res.json(currentUser.products);
+    
+
+    
+
+
+})
+
 app.get("/users/all", async (req, res) => {
     const users = await Users.find();
     res.json(users);
 
+})
+app.get("/contact", (req, res) => {
+    if(!req.cookies.token)
+    {
+        res.render("login.ejs",{message:"please login first"})
+    }
+    res.render("contact.ejs");
 })
 
 app.post("/register", async (req, res) => {
@@ -109,14 +152,17 @@ app.post("/register", async (req, res) => {
         console.log("user added with name:", name);
         const newUser = await Users.findOne({ email })
         
-        res.cookie("token", newUser.id, {
-            httpOnly: true,
-            expires: new Date(Date.now() + 300000)
+
+        const token = jwt.sign({id:newUser.id},'apoorva')
+        console.log("jwt token is:",token);
+        res.cookie("token", token, {
+            httpOnly: false,
+            expires: new Date(Date.now() + 30000000)
 
         })
 
 
-
+        
         res.render("home.ejs");
 
         // res.redirect("/home");
@@ -135,8 +181,10 @@ app.post("/login", async (req, res) => {
         if (await bcrypt.compare(req.body.password, checkUser.password)) {
             // req.session.user_id = checkUser.id; 
             // console.log("id of logged in user is",req.session.user_id);
-            res.cookie("token", checkUser.id, {
-                httpOnly: true,
+            const token = jwt.sign({id:checkUser.id},'apoorva')
+            console.log("jwt token is:",token);
+            res.cookie("token", token, {
+                httpOnly: false,
                 expires: new Date(Date.now() + 30000000)
 
             })
@@ -150,12 +198,24 @@ app.post("/login", async (req, res) => {
 
 })
 
+app.post("/logout",(async(req,res)=>{
+   try {
+    
+       await res.clearCookie("token")
+   } catch (error) {
+    console.log(error);
+   }
+   res.render("login.ejs",{message:'Welcome'})
+
+}))
+
 app.post("/donate", async (req, res) => {
-    const currentUserID = req.cookies.token;
+    const currentUserID = jwt.verify(req.cookies.token,'apoorva') ;
+    console.log("current id:",currentUserID);
     // console.log("current user id",currentUserID)
     try {
         console.log(req.body)
-        const currentUser = await Users.updateOne({ _id: currentUserID }, {
+        const currentUser = await Users.updateOne({ _id: currentUserID.id }, {
             $push: {
                 
                 products:new Object(req.body)
@@ -164,14 +224,22 @@ app.post("/donate", async (req, res) => {
     } catch (error) {
         console.log(error)
     }
-
-
-  
+    
+    const user = jwt_decode(req.cookies.token);
+    let currentUser = await Users.findById(user.id);
+    // console.log("to be mailed:",currentUser);
+    if(currentUser){
+        console.log(req.body);
+        sendMail(currentUser.email,req.body.equipment,req.body.quality);
+        
+    }
 
     res.render("donate.ejs",{message:"Donation registered Successfully!"})
 
 })
 
-app.listen(4000, () => {
-    console.log("server is up")
+connectDB().then(()=>{
+    app.listen(4000, () => {
+        console.log("server is up")
+    })
 })

@@ -4,6 +4,7 @@
   font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   box-sizing: border-box;
 }
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Lato&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Alkatra&family=Bebas+Neue&family=Montserrat:ital@1&display=swap');
 /* to animate on page reload */
 
@@ -11,23 +12,32 @@
 
   animation: 1s reloadTransition;
   height:inherit;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  max-height: 100vh;
   /* background-color: transparent; */
   /* overflow-x: hidden; */
   /* background-color: transparent; */
 
 }
-body::before{
-  content:"";
-  position:fixed;
-  background: url("https://wallpaperaccess.com/full/4425577.jpg") no-repeat ;
-  top:0;
-  left:0;
-  width:100vw;
-  min-height: 100vh;
-  background-size: cover;
-  z-index: -1;
-  opacity: 1;
+.imageSlider{
+  max-height: 100vh;
+
+  margin-top:18vh;
+  display:flex;
+  justify-content: space-evenly;
+  align-items: center;
 }
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width:100vw;
+  min-height: 100%;
+  z-index: -122;
+}
+
 .AboutContainer{
   animation: 1s reloadTransition;
 }
@@ -46,12 +56,33 @@ body::before{
 
 
 nav {
-  background-color: rgba(31, 31, 33, 0.307);
+  width: 100vw;
+  position: fixed;
+  background-color: rgba(146, 146, 214, 0.507);
   /* border: 2px solid red; */
   height: 10vh;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+#heart{
+  width: 70px;
+  height: 70px;
+}
+.logoutBtn{
+  background-color: red;
+  color:white;
+ position:absolute;
+  right:1rem;
+  top:1%;
+  margin:12px;
+  padding:8px 14px;
+transition:0.3s all;
+cursor:pointer;
+}
+.logoutBtn:hover{
+  color:black;
+  background-color: rgb(247, 167, 167);
 }
 .icon{
   background-color: white;
@@ -76,14 +107,17 @@ nav {
   text-decoration: none;
   cursor: pointer;
   margin:0px 3rem;
-  transition: all 0.7s;
+  transition: all 0.4s;
+  display: inline-block;
 }
 
 .navlist li a:hover {
   /* text-decoration: underline; */
-  background-color: rgb(255, 255, 255);
-  color: rgb(43, 162, 226);
-  box-shadow: 2px 2px 2px 2px rgb(43, 217, 226);
+  background-color: rgb(0, 0, 0);
+ transform: translateY(-20px);
+ transform: scale(1.1);
+  color: rgb(246, 247, 248);
+  box-shadow: 2px 2px 2px 2px rgb(232, 249, 250);
   
 }
 .activeLink{
@@ -98,17 +132,57 @@ nav {
 
 #typedText{
   text-align: center;
-  color: rgb(0, 0, 0);
+ 
+  
+  /* text-shadow: 0 1px 0 #ccc, 
+                 0 2px 0 #c9c9c9,
+                 0 3px 0 #bbb,
+                 0 4px 0 #b9b9b9,
+                 0 5px 0 #aaa,
+                 0 6px 1px rgba(0,0,0,.1),
+                 0 0 5px rgba(0,0,0,.1),
+                 0 1px 3px rgba(0,0,0,.3),
+                 0 3px 5px rgba(0,0,0,.2),
+                 0 5px 10px rgba(0,0,0,.25),
+                 0 10px 10px rgba(0,0,0,.2),
+                 0 20px 20px rgba(0,0,0,.15); */
+
+
+/* text-shadow: 0px 15px 5px rgba(0,0,0,0.1),
+                 10px 20px 5px rgba(0,0,0,0.05),
+                 -10px 20px 5px rgba(0,0,0,0.05); */
+                 
+
   font-size: 2rem;
   background-color: white
   ;
-  width:54vw;
-  margin:2rem auto;
+  width:84vw;
+  margin:1rem auto;
+  margin-bottom: 3rem;
   border-radius: 12px;
-  padding:20px 0px;
-  
+  padding:10px 0px;
+  animation:slideUp 4s;
+  position: relative;
+  text-transform: uppercase;
+  text-shadow: -15px 5px 20px #bed0d3;
+  color: white;
+  letter-spacing: -0.05em;
+  font-family: 'Anton', Arial, sans-serif;
+  user-select: none;
+  text-transform: uppercase;
+  font-size: 150px;
+  transition: all 0.25s ease-out;
 }
-
+@keyframes slideUp {
+  from{
+    opacity:0;
+    bottom:-200px;
+  }
+  to{
+    opacity: 1;
+    bottom:0;
+  }
+}
 
 .welcomeSection{
   
@@ -121,7 +195,7 @@ nav {
 }
 .welcomeSection::before {
   content: "";
-  background: url(https://images.unsplash.com/photo-1593086586351-1673fca190cf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80) no-repeat center center/cover;
+  background: url(https://wallpaperaccess.com/full/3937139.jpg) no-repeat center center/cover;
   position: absolute;
   top: 0;
   left: 0;
@@ -134,14 +208,24 @@ nav {
 .welcomeMessage{
   background-color: white;
   width: 60vw;
-  height: 60vh;
+  min-height: 60vh;
   margin:auto;
   border-radius: 17px;
   font-weight: 500;
   position: absolute;
-  
+  transition:filter 0.7s;
   animation: transitionIn 1s;
+ animation: float alternate-reverse 1s infinite ease-in-out;
 
+}
+
+.welcomeMessage:hover{
+  filter:invert(1);
+}
+@keyframes float {
+  to{
+    transform:translateY(10px);
+  }
 }
 
 @keyframes transitionIn {
@@ -173,9 +257,10 @@ nav {
 
 
 .swiper-wrapper{
-  height: 80vh;
+  height: 70vh;
   width: 50vw;
 }
+
 
 .swiper-slide
 {
@@ -218,10 +303,51 @@ nav {
   height: 10vh;
 }
 #welcomeHome{
-  color: whitesmoke;
-  font-size: 4rem;
+  
+  font-size: 6rem;
   text-align: center;
   margin:10px;
   font-style:italic;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+padding:40px;
+font-weight: bold;
+border-radius: 5px;;
+  
+  font-family: 'Bangers', cursive;
+  animation-name: leftIn;
+  /* animation-delay: 1s; */
+  animation-timing-function:ease
+  ;
+  animation-duration: 2s;
+  /* margin-bottom: 120px;; */
+  margin-left: 29px;
+  transition:1s all;
+  color: white;
+
+  color: #fff;
+
+  text-shadow: 3px 3px 20px #51e2f5,
+      -2px 1px 30px #51e2f5;
+      cursor: pointer;
+}
+#welcomeHome:hover{
+opacity:0;
+}
+@keyframes leftIn {
+    0%{
+      position:relative;
+      left:-400px;
+      opacity:0;
+    }
+    100%{
+      position:relative;
+      left:0px;
+      opacity:1;
+    }
+}
+
+.donationContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

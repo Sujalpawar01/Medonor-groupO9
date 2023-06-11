@@ -4,8 +4,8 @@
 
 }
 body{
-    width: 100vw;
-    height: 100vh;
+    /* width: 100vw;
+    height: 100vh; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,17 +24,38 @@ body{
         }
         
       }
+      body::before{
+        content:"";
+        position:fixed;
+        background: url("./images/mountain2.jpeg") no-repeat ;
+        top:0;
+        left:0;
+        width:100vw;
+        min-height: 100vh;
+        background-size: cover;
+        z-index: -1;
+        opacity: 1;
+      }
 form{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     
-    background-color: rgba(0, 0, 0, 0.348);
+    background-color: rgba(0, 0, 0, 0.448);
     color: white;
     font-family: system-ui;;
-    padding:4rem;
    
+   
+}
+.donationContainer{
+    display: flex;
+    flex-direction: column;
+    margin-top: 8rem;
+    /* overflow-y: scroll; */
+}
+#donateForm{
+    padding:3rem;
 }
 form label
 {
@@ -87,4 +108,34 @@ form button:hover{
         display:none;
         
     }
+}
+.tableContainer{
+    margin-top: 2rem;
+    overflow:hidden;
+    overflow-y: scroll;
+    height: 30vh;
+   
+}
+.tableContainer::-webkit-scrollbar{
+    display: none;
+}
+
+.productsTable{
+    width: 70vh;
+    margin:20px;
+   border:1px solid white;
+   
+}
+.productsTable td{
+    padding:14px;
+    text-align: center;
+   color:yellow;
+   border: 1px solid white;
+   
+}
+
+.tableHeading{
+    font-size: large;
+    font-weight: bold;
+    padding:24px;
 }
